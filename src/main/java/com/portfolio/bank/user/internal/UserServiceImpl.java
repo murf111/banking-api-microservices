@@ -11,6 +11,9 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @Service
 @RequiredArgsConstructor
 class UserServiceImpl implements UserService {
@@ -39,7 +42,12 @@ class UserServiceImpl implements UserService {
                                                                             .roles(user.getRole().name())
                                                                             .build();
 
-        String token = jwtUtil.generateToken(userDetails);
+        Map<String, Object> extraClaims = new HashMap<>();
+        extraClaims.put("userId", user.getId());
+        extraClaims.put("role", "ROLE_" + user.getRole().name());
+
+        String token = jwtUtil.generateToken(extraClaims, userDetails);
+
         return new AuthResponse(token, user.getEmail());
     }
 
@@ -56,14 +64,12 @@ class UserServiceImpl implements UserService {
                                                                             .roles(user.getRole().name())
                                                                             .build();
 
-        String token = jwtUtil.generateToken(userDetails);
-        return new AuthResponse(token, user.getEmail());
-    }
+        Map<String, Object> extraClaims = new HashMap<>();
+        extraClaims.put("userId", user.getId());
+        extraClaims.put("role", "ROLE_" + user.getRole().name());
 
-    @Override
-    public Long getUserIdByEmail(String email) {
-        return userRepository.findByEmail(email)
-                             .map(UserEntity::getId)
-                             .orElseThrow(() -> new IllegalArgumentException("User not found"));
+        String token = jwtUtil.generateToken(extraClaims, userDetails);
+
+        return new AuthResponse(token, user.getEmail());
     }
 }

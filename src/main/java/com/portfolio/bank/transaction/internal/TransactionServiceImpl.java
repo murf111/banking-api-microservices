@@ -24,14 +24,14 @@ class TransactionServiceImpl implements TransactionService {
 
     @Override
     @Transactional // Guarantees ACID properties for the entire transfer
-    public TransactionResponse transfer(String userEmail, TransferRequest request) {
+    public TransactionResponse transfer(Long userId, TransferRequest request) {
 
         if (request.sourceAccountId().equals(request.destinationAccountId())) {
             throw new IllegalArgumentException("Cannot transfer funds to the same account");
         }
 
         // 1. Verify Ownership & Balance (getAccount throws if user doesn't own it)
-        AccountResponse sourceAccount = accountService.getAccount(request.sourceAccountId(), userEmail);
+        AccountResponse sourceAccount = accountService.getAccount(request.sourceAccountId(), userId);
 
         if (sourceAccount.balance().compareTo(request.amount()) < 0) {
             throw new IllegalArgumentException("Insufficient funds for transfer");

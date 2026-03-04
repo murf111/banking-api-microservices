@@ -3,7 +3,6 @@ package com.portfolio.bank.account.internal;
 import com.portfolio.bank.account.api.AccountResponse;
 import com.portfolio.bank.account.api.AccountService;
 import com.portfolio.bank.account.api.CreateAccountRequest;
-import com.portfolio.bank.user.api.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,12 +16,10 @@ import java.util.stream.Collectors;
 class AccountServiceImpl implements AccountService {
 
     private final AccountRepository accountRepository;
-    private final UserService userService; // Cross-module communication via interface
 
     @Override
     @Transactional
-    public AccountResponse createAccount(String userEmail, CreateAccountRequest request) {
-        Long userId = userService.getUserIdByEmail(userEmail);
+    public AccountResponse createAccount(Long userId, CreateAccountRequest request) {
 
         AccountEntity account = new AccountEntity();
         account.setUserId(userId);
@@ -36,16 +33,14 @@ class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public AccountResponse getAccount(Long accountId, String userEmail) {
-        Long userId = userService.getUserIdByEmail(userEmail);
+    public AccountResponse getAccount(Long accountId, Long userId) {
         return accountRepository.findByIdAndUserId(accountId, userId)
                                 .map(this::mapToResponse)
                                 .orElseThrow(() -> new IllegalArgumentException("Account not found or access denied"));
     }
 
     @Override
-    public List<AccountResponse> getUserAccounts(String userEmail) {
-        Long userId = userService.getUserIdByEmail(userEmail);
+    public List<AccountResponse> getUserAccounts(Long userId) {
         return accountRepository.findAllByUserId(userId).stream()
                                 .map(this::mapToResponse)
                                 .collect(Collectors.toList());
