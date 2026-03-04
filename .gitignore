@@ -1,0 +1,38 @@
+# Build and Output
+target/
+*.jar
+*.war
+*.ear
+build/
+bin/
+
+# Maven
+.mvn/wrapper/maven-wrapper.jar
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+dependency-reduced-pom.xml
+
+# IDEs
+.idea/
+*.iws
+*.iml
+*.ipr
+.vscode/
+.classpath
+.project
+.settings/
+.springBeans
+.sts4-cache/
+
+# OS Specific (Mac)
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Logs
+*.log
+
+# Environment variables / Secrets
+.env
+*.env
