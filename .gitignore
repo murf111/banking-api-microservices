@@ -36,3 +36,6 @@ dependency-reduced-pom.xml
 # Environment variables / Secrets
 .env
 *.env
+
+# Ignore local config vault to prevent leaking secrets
+config-repo/
