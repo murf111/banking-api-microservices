@@ -1,0 +1,34 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: api-gateway
+  config:
+    import: "optional:configserver:http://localhost:8888" # Read secrets from Config Server
+  cloud:
+    gateway:
+      routes:
+        # 1. Route for User Service (Auth & Registration)
+        - id: user-service
+          uri: lb://user-service       # 'lb://' means use Eureka Load Balancer to find it
+          predicates:
+            - Path=/api/v1/auth/**
+
+        # 2. Route for Account Service
+        - id: account-service
+          uri: lb://account-service
+          predicates:
+            - Path=/api/v1/accounts/**
+
+        # 3. Route for Transaction Service
+        - id: transaction-service
+          uri: lb://transaction-service
+          predicates:
+            - Path=/api/v1/transactions/**
+
+# Tell the Gateway to register itself in the Eureka Phonebook
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
