@@ -1,8 +1,8 @@
-package com.portfolio.bank.transaction.api;
+package com.portfolio.bank.notification;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 
+// Local DTO to catch the Kafka JSON message
 public record MoneyTransferredEvent(
         Long sourceAccountId,
         Long destinationAccountId,

@@ -7,7 +7,7 @@ import com.portfolio.bank.transaction.api.TransactionResponse;
 import com.portfolio.bank.transaction.api.TransactionService;
 import com.portfolio.bank.transaction.api.TransferRequest;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,7 +20,7 @@ class TransactionServiceImpl implements TransactionService {
     private final TransactionRepository transactionRepository;
     private final AccountClient accountService; // Cross-module communication
 
-    private final ApplicationEventPublisher eventPublisher;
+    private final KafkaTemplate<String, Object> kafkaTemplate;
 
     @Override
     @Transactional // Guarantees ACID properties for the entire transfer
@@ -51,12 +51,14 @@ class TransactionServiceImpl implements TransactionService {
 
         TransactionEntity savedTransaction = transactionRepository.save(transaction);
 
-        eventPublisher.publishEvent(new MoneyTransferredEvent(
+        MoneyTransferredEvent event = new MoneyTransferredEvent(
                 savedTransaction.getSourceAccountId(),
                 savedTransaction.getDestinationAccountId(),
                 savedTransaction.getAmount(),
-                savedTransaction.getTimestamp()
-        ));
+                savedTransaction.getTimestamp().toString()
+        );
+
+        kafkaTemplate.send("transaction-events", event);
 
         return new TransactionResponse(
                 savedTransaction.getId(),
