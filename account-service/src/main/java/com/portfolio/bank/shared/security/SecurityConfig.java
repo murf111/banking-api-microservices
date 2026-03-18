@@ -28,6 +28,7 @@ public class SecurityConfig {
                         // Only Swagger docs are public here. No login/register endpoints exist in this service!
                         .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
                         .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/actuator/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 // Add our custom JWT filter. No database-backed AuthenticationProvider needed!

@@ -9,7 +9,7 @@ spring:
   cloud:
     gateway:
       server:
-        webflux:  # <-- THE NEW 2025 REQUIREMENT
+        webflux:
           routes:
             # 1. Route for User Service (Auth & Registration)
             - id: user-service
@@ -22,6 +22,16 @@ spring:
               uri: lb://account-service
               predicates:
                 - Path=/api/v1/accounts/**
+              filters:
+                # Block external PUT requests to the balance endpoint
+                - RemoveRequestHeader=Cookie
+
+            - id: account-service-internal-block
+              uri: no://op
+              predicates:
+                - Path=/api/v1/accounts/*/balance
+              filters:
+                - SetStatus=403
 
             # 3. Route for Transaction Service
             - id: transaction-service

@@ -28,6 +28,7 @@ public class SecurityConfig {
                         // Only Swagger is public. Transactions require authentication!
                         .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
                         .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/actuator/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 // Inject our JWT filter

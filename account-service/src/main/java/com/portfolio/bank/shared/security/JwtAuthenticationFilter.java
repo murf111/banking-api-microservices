@@ -52,7 +52,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             if (jwtUtil.isTokenValid(jwt)) {
 
                 // Extract custom claims directly from the token
-                Long userId = jwtUtil.extractClaim(jwt, claims -> claims.get("userId", Long.class));
+                Long userId = jwtUtil.extractClaim(jwt, claims -> ((Number) claims.get("userId")).longValue());
                 String role = jwtUtil.extractClaim(jwt, claims -> claims.get("role", String.class));
 
                 // Build the custom principal

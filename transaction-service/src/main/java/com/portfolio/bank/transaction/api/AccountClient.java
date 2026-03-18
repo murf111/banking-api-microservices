@@ -1,5 +1,6 @@
 package com.portfolio.bank.transaction.api;
 
+import com.portfolio.bank.shared.security.FeignConfig;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -8,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.math.BigDecimal;
 
-@FeignClient(name = "account-service")
+@FeignClient(name = "account-service", configuration = FeignConfig.class)
 public interface AccountClient {
 
     // 1. Ask the Account Service for the Account details

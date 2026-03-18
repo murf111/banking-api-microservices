@@ -75,6 +75,7 @@ class AccountServiceImpl implements AccountService {
     private AccountResponse mapToResponse(AccountEntity entity) {
         return new AccountResponse(
                 entity.getId(),
+                entity.getUserId(),
                 entity.getAccountNumber(),
                 entity.getBalance(),
                 entity.getCurrency(),
